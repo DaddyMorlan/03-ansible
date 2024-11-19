@@ -1,0 +1,5 @@
+lighthouse_address: 89.169.158.21
+lighthouse_install_dir: "/opt/lighthouse"
+nginx_config_path: "template/lighthouse.conf"
+nginx_config_file: "/etc/nginx/conf.d/light.conf"
+nginx_package: "nginx.x86_64"

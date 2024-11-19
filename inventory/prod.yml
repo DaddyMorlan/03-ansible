@@ -7,3 +7,7 @@ vector:
   hosts:
     vector-01:
       ansible_host: "{{ vector_address }}"
+lighthouse:
+  hosts:
+    lighthouse-01:
+      ansible_host: "{{ lighthouse_address }}"

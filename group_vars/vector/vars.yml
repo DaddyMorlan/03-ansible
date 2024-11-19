@@ -2,5 +2,5 @@ vector_version: "0.42.0"
 vector_install_dir: "/opt/vector"
 vector_service_file: "/etc/systemd/system/vector.service"
 vector_config_file: "/opt/vector/vector.toml"
-vector_address: 84.252.129.232
+vector_address: 89.169.155.112
 vector_config_path: "template/vector_template.toml.j2"

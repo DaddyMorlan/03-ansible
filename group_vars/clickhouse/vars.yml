@@ -4,4 +4,4 @@ clickhouse_packages:
   - clickhouse-client
   - clickhouse-server
   - clickhouse-common-static
-clickhouse_address: 51.250.81.129
+clickhouse_address: 51.250.75.40

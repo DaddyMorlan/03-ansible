@@ -4,7 +4,7 @@
   become: true
   vars:
     ansible_user: "{{ ansible_username }}"
-    ansible_ssh_private_key_file : "{{ ssh_key_file }}"
+    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
   handlers:
     - name: Start clickhouse service
       become: true
@@ -23,7 +23,7 @@
             mode: '0644'
           loop: "{{ clickhouse_packages }}"
           register: download_result
-          failed_when: download_result.status_code != 200 and download_result.status_code !=304
+          failed_when: download_result.status_code != 200 and download_result.status_code != 304
       rescue:
         - name: Get clickhouse static distrib
           ansible.builtin.get_url:
@@ -50,11 +50,11 @@
       changed_when: create_db.rc == 0
 
 - name: Install vector
-  hosts: vector-01
+  hosts: vector
   become: true
   vars:
     ansible_user: "{{ ansible_username }}"
-    ansible_ssh_private_key_file : "{{ ssh_key_file }}"
+    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
   handlers:
     - name: Start vector service
       become: true
@@ -85,8 +85,9 @@
         remote_src: true
 
     - name: Create systemd service for Vector
-      copy:
+      ansible.builtin.copy:
         dest: /etc/systemd/system/vector.service
+        mode: '0755'
         content: |
           [Unit]
           Description=Vector Service
@@ -111,3 +112,58 @@
 
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
+
+
+- name: Install Lighthouse
+  hosts: lighthouse
+  become: true
+  vars:
+    ansible_user: "{{ ansible_username }}"
+    ansible_ssh_private_key_file: "{{ ssh_key_file }}"
+
+  handlers:
+    - name: Start nginx service
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+  tasks:
+    - name: Make lighthouse dir
+      ansible.builtin.file:
+        path: "{{ lighthouse_install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download lighthouse latest zip
+      ansible.builtin.get_url:
+        url: "https://github.com/VKCOM/lighthouse/archive/refs/heads/master.zip"
+        dest: "/tmp/lighthouse.zip"
+        mode: '0644'
+
+    - name: Install required packages for extracting archives
+      ansible.builtin.package:
+        name:
+        - unzip
+        - tar
+        - gzip
+        - bzip2
+        state: present
+
+    - name: Extract lighthouse
+      ansible.builtin.unarchive:
+        src: "/tmp/lighthouse.zip"
+        dest: "{{ lighthouse_install_dir }}"
+        remote_src: true
+
+    - name: Install lighthouse packages
+      become: true
+      ansible.builtin.yum:
+        name: "{{ nginx_package }}"
+
+    - name: Deploy nginx config
+      ansible.builtin.template:
+        src: "{{ nginx_config_path }}"
+        dest: "{{ nginx_config_file }}"
+        mode: '0755'
+      notify: Start nginx service
