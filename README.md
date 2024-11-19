@@ -16,9 +16,10 @@ There will be no more versions anymore
 - vector_version - vector version that you need to install
 - vector_install_dir - directory to download and unarchive vector package
 - vector_service_file - *DO NOT CHANGE* need to register vector as a service
-- vector_config_file - location to save your vector config *IF YOU CHANGE vector_install_dir YOU NEED TO CHANDGE THIS TOO*
+- vector_config_file - location to save your vector config *IF YOU CHANGE vector_install_dir YOU NEED TO CHANGE THIS TOO*
 - vector_address - address for your machine
 - vector_config_path - local path to vector config file
+### lighthouse vars:
 ## After changes in vars you can start playbook site.yml with inventory/prod.yml inventory file
 By command
 
